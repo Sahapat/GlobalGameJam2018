@@ -2,10 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum RequestItem
+{
+    ArtAsset,
+    data,
+    RedBull,
+    None
+};
+
 public class Progresser : MonoBehaviour
 {
     [SerializeField]
     private GameObject ProgressHubOBJ;
+    [SerializeField]
+    private GameObject RequestObj;
 
     public byte playerOrder;
 
@@ -17,9 +27,17 @@ public class Progresser : MonoBehaviour
     public bool isStun;
     public float duration;
     public bool isStartProgress;
+    public bool canProgress;
+    public byte stopRemain = 2;
+    public float stopProgress;
+    public bool isWorking;
+    public bool isGetTranmission;
 
-    private ProgressHub progressHub = null;
+    public RequestItem itemRequest = RequestItem.None;
 
+    private Animator anim;
+    public ProgressHub progressHub = null;
+    private RequestDisplay display = null;
     IEnumerator progressing(byte level)
     {
         while(true)
@@ -37,14 +55,22 @@ public class Progresser : MonoBehaviour
 
         gameController = FindObjectOfType<GameController>();
         progressHub = ProgressHubOBJ.GetComponent<ProgressHub>();
+        anim = GetComponent<Animator>();
+        display = RequestObj.GetComponent<RequestDisplay>();
+        stopProgress = 0;
         progressStatus = 0;
         isStartProgress = true;
+        isWorking = true;
+        randomRequest();
+        anim.SetBool("isWorking", isWorking);
     }
 
     private void Update()
     {
         if(gameController.isGameStart)
         {
+            anim.SetBool("isWorking", isWorking);
+            RequestObj.SetActive(!canProgress);
             if (isHaveStatus)
             {
                 if (duration > 0)
@@ -70,6 +96,35 @@ public class Progresser : MonoBehaviour
                 StopAllCoroutines();
                 isStartProgress = true;
             }
+            if(progressHub.totalProgress > stopProgress)
+            {
+                if(!isGetTranmission)
+                {
+                    progressHub.totalProgress = (int)stopProgress;
+                    canProgress = false;
+                }
+                else
+                {
+                    if(stopRemain> 0)
+                    {
+                        randomRequest();
+                    }
+                    else
+                    {
+                        stopProgress = 110;
+                        canProgress = true;
+                        isGetTranmission = false;
+                    }
+                }
+            }
+            if(progressStatus > 3 || isStun || !canProgress)
+            {
+                isWorking = false;
+            }
+            else
+            {
+                isWorking = true;
+            }
         }
     }
     private void restoreStatus()
@@ -79,6 +134,18 @@ public class Progresser : MonoBehaviour
         duration = 0;
         isHaveStatus = false;
     }
+    public bool sendTranmission(RequestItem inItem)
+    {
+        if (inItem == itemRequest)
+        {
+            isGetTranmission = true;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
     public void setStatus(bool isStun, byte progressStatus, float duration)
     {
         this.isStun = isStun;
@@ -86,5 +153,30 @@ public class Progresser : MonoBehaviour
         this.duration = duration;
         isHaveStatus = true;
         isStartProgress = true;
+    }
+    private void randomRequest()
+    {
+        int max = (progressHub.totalProgress < 50) ? 50 : 100;
+        stopProgress = Random.Range(progressHub.totalProgress, max);
+        byte item = (byte)Random.Range(0, 3);
+        switch (item)
+        {
+            case 0:
+                itemRequest = RequestItem.ArtAsset;
+                break;
+            case 1:
+                itemRequest = RequestItem.data;
+                break;
+            case 2:
+                itemRequest = RequestItem.RedBull;
+                break;
+            default:
+                itemRequest = RequestItem.RedBull;
+                break;
+        }
+        display.showRequest(itemRequest);
+        stopRemain -= 1;
+        canProgress = true;
+        isGetTranmission = false;
     }
 }

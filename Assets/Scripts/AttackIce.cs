@@ -18,7 +18,8 @@ public class AttackIce : Item
     {
         this.whoUse = whoUse.GetComponent<Player>().PlayerOrder;
         transform.position = whoUse.transform.position;
-        myRig.velocity = new Vector2(direction.x,-direction.y)* Force;
+        Vector2 moveForce = new Vector2(direction.x, -direction.y) * Force;
+        myRig.velocity = moveForce;
         isShoot = true;
     }
     private void OnTriggerEnter2D(Collider2D collision)
@@ -30,7 +31,7 @@ public class AttackIce : Item
                 Player player = collision.GetComponent<Player>();
                 if (player.PlayerOrder != whoUse)
                 {
-                    player.setStatus(true, 0, EffectDuration);
+                    player.setStatus(false, -3, EffectDuration);
                     Destroy(this.gameObject);
                 }
             }

@@ -18,8 +18,8 @@ TagManager:
   - 
   - 
   - Player
-  - 
-  - 
+  - Obtacle
+  - Punch
   - 
   - 
   - 
@@ -53,4 +53,16 @@ TagManager:
     locked: 0
   - name: Player
     uniqueID: 50888395
+    locked: 0
+  - name: BubbleOnPlayer
+    uniqueID: 3733524857
+    locked: 0
+  - name: OnBubblePlayer
+    uniqueID: 2692963201
+    locked: 0
+  - name: Bubble
+    uniqueID: 2990278957
+    locked: 0
+  - name: Onbubble
+    uniqueID: 2314701931
     locked: 0
