@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4732561473264614}
   - component: {fileID: 212626421188082672}
-  - component: {fileID: 114520976530689696}
+  - component: {fileID: 114681733173700350}
   m_Layer: 0
   m_Name: Request
   m_TagString: Untagged
@@ -69,8 +69,8 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1850606601202336}
-  m_LocalRotation: {x: -0, y: -0, z: -0.16658033, w: 0.9860279}
-  m_LocalPosition: {x: -0.06, y: 0.01, z: 2.5979474}
+  m_LocalRotation: {x: -0, y: -0, z: -0.10407233, w: 0.9945697}
+  m_LocalPosition: {x: -0.04, y: -0.07, z: 2.5979474}
   m_LocalScale: {x: 0.2588425, y: 0.2588425, z: 0.2588425}
   m_Children: []
   m_Father: {fileID: 4732561473264614}
@@ -83,7 +83,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1701241768836656}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.94, y: -0.06, z: 1}
+  m_LocalPosition: {x: -1.99, y: 0.05, z: 1}
   m_LocalScale: {x: 0.83657545, y: 0.83657545, z: 0.83657545}
   m_Children:
   - {fileID: 4732561473264614}
@@ -96,14 +96,14 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1429280357914364}
-  m_LocalRotation: {x: -0, y: -0, z: 0.16658033, w: 0.9860279}
-  m_LocalPosition: {x: -1.35, y: 0.13, z: -5}
+  m_LocalRotation: {x: -0, y: -0, z: 0.10407233, w: 0.9945697}
+  m_LocalPosition: {x: -1.35, y: 0.7, z: -5}
   m_LocalScale: {x: 1.9245963, y: 1.9245963, z: 1.9245963}
   m_Children:
   - {fileID: 4577861818867722}
   m_Father: {fileID: 4713930475006750}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 19.178001}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 11.9470005}
 --- !u!61 &61665260713857916
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -146,7 +146,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114520976530689696
+--- !u!114 &114681733173700350
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -177,6 +177,10 @@ MonoBehaviour:
   RequestObj: {fileID: 1429280357914364}
   playerOrder: 1
   progressStatus: 0
+  spawnRequest:
+  - {fileID: 1459507858584600, guid: 138b8b19c69550947a5828531207373b, type: 2}
+  - {fileID: 1205863263411502, guid: e4a371fd36f732748ba995f014afc116, type: 2}
+  - {fileID: 1338648374393024, guid: a4dae44da0632c94094b450a6053698c, type: 2}
   isHaveStatus: 0
   isStun: 0
   duration: 0

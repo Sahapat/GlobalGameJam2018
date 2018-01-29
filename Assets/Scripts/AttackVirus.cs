@@ -7,6 +7,7 @@ public class AttackVirus : Item
     private void Awake()
     {
         UseType = ItemUsedType.Boots;
+        objItem = gameItem.virus;
     }
     public override void UseItem(GameObject target)
     {

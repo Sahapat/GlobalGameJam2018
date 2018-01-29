@@ -51,6 +51,8 @@ public class Player : MonoBehaviour
     [SerializeField]
     private LayerMask punchMask;
 
+    public AudioClip hit;
+    public AudioClip glass;
     private float punchTimer = 0;
     public float punchCd = 0.1f;
     private bool punching = false;
@@ -64,6 +66,8 @@ public class Player : MonoBehaviour
     private float DirectionY = 0;
     private bool isRuning = false;
 
+    public GameObject effect;
+    private Animator effectAnim;
     private Rigidbody2D myRig = null;
     private Vector2 ArrowDirection;
     private EffectChecking effectChecking = null;
@@ -72,6 +76,8 @@ public class Player : MonoBehaviour
     private GameController gameController = null;
     private ProgressChecker progressChecker = null;
     private Animator PlayerAnim = null;
+    private AudioSource audioSource;
+    public GameObject bubble;
 
     private void Awake()
     {
@@ -80,11 +86,14 @@ public class Player : MonoBehaviour
         inventory = GetComponent<Inventory>();
         gameController = FindObjectOfType<GameController>();
         progressChecker = ProgressCheckObj.GetComponent<ProgressChecker>();
+        effectAnim = effect.GetComponent<Animator>();
         PlayerAnim = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
         isStun = false;
         isHaveStatus = false;
         DirectionX = 0;
         DirectionY = -1;
+        bubble.SetActive(!inventory.isSlotAvilable);
     }
     public void setStatus(bool isStun,float speed,float duration)
     {
@@ -104,6 +113,7 @@ public class Player : MonoBehaviour
     {
         if (gameController.isGameStart)
         {
+            bubble.SetActive(!inventory.isSlotAvilable);
             if (isHaveStatus)
             {
                 if (DurationStatus > 0)
@@ -167,6 +177,17 @@ public class Player : MonoBehaviour
                                 if (effectChecking.targetObject != null)
                                 {
                                     use.UseItem(effectChecking.targetObject);
+                                    switch (use.objItem)
+                                    {
+                                        case gameItem.chair:
+                                            effectAnim.SetTrigger("ChairSmash");
+                                            audioSource.PlayOneShot(hit);
+                                            break;
+                                        case gameItem.keyboard:
+                                            effectAnim.SetTrigger("KeybordeSmash");
+                                            audioSource.PlayOneShot(glass);
+                                            break;
+                                    }
                                     inventory.removeItem();
                                 }
                                 else if (progressChecker.targetObject != null)
@@ -174,6 +195,17 @@ public class Player : MonoBehaviour
                                     if (progressChecker.targetObject.GetComponent<Progresser>().playerOrder != PlayerOrder)
                                     {
                                         use.UseItem(progressChecker.targetObject);
+                                        switch(use.objItem)
+                                        {
+                                            case gameItem.chair:
+                                                audioSource.PlayOneShot(hit);
+                                                effectAnim.SetTrigger("ChairSmash");
+                                                break;
+                                            case gameItem.keyboard:
+                                                audioSource.PlayOneShot(glass);
+                                                effectAnim.SetTrigger("KeybordeSmash");
+                                                break;
+                                        }
                                         inventory.removeItem();
                                     }
                                 }
@@ -183,6 +215,11 @@ public class Player : MonoBehaviour
                                 inventory.removeItem();
                                 break;
                             case ItemUsedType.Boots:
+                                if(progressChecker.targetObject != null)
+                                {
+                                    use.UseItem(progressChecker.targetObject);
+                                    inventory.removeItem();
+                                }
                                 break;
                             default:
                                 break;
@@ -191,7 +228,53 @@ public class Player : MonoBehaviour
                 }
                 if (ActionInputController.getCollectButton(PlayerOrder) && pickupObj != null)
                 {
-                    pickupObj.GetComponent<Item>().Pickup(this.gameObject);
+                    Item pick = pickupObj.GetComponent<Item>();
+                    pick.Pickup(this.gameObject);
+                    if(pick.isSpecial)
+                    {
+                        gameController.isSpecialEmpty[pick.onIndex] = true;
+                    }
+                    else if (pick.isOnRedBull)
+                    {
+                        gameController.isRedbullEmpty[pick.onIndex] = true;
+                    }
+                    else
+                    {
+                        gameController.isCommonEmpty[pick.onIndex] = true;
+                    }
+                }
+                if(ActionInputController.getDiscardButton(PlayerOrder))
+                {
+                    inventory.removeItem();
+                    Item used = inventory.useItem();
+                    Vector3 spawnPoint = transform.position;
+                    switch(used.objItem)
+                    {
+                        case gameItem.artAsset:
+                            Instantiate(gameController.otherSpecial[0], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.chair:
+                            Instantiate(gameController.commonObject[0], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.ice:
+                            Instantiate(gameController.commonObject[1], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.keyboard:
+                            Instantiate(gameController.commonObject[2], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.penpad:
+                            Instantiate(gameController.commonObject[3], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.redbull:
+                            Instantiate(gameController.otherSpecial[2], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.usb:
+                            Instantiate(gameController.otherSpecial[1], spawnPoint, Quaternion.identity);
+                            break;
+                        case gameItem.virus:
+                            Instantiate(gameController.otherSpecial[3], spawnPoint, Quaternion.identity);
+                            break;
+                    }
                 }
                 if (punching)
                 {
@@ -235,5 +318,30 @@ public class Player : MonoBehaviour
         punching = true;
         punchTimer = punchCd;
         PlayerAnim.SetBool("isPunch",punching);
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.CompareTag("items"))
+        {
+            AttackPenPad pen = collision.GetComponent<AttackPenPad>();
+            AttackIce ice = collision.GetComponent<AttackIce>();
+
+            if(pen != null)
+            {
+                if (pen.isShoot&&pen.whoUse != PlayerOrder)
+                {
+                    effectAnim.SetTrigger("Star");
+                    audioSource.PlayOneShot(hit);
+                }
+            }
+            else if(ice != null)
+            {
+                if (ice.isShoot&&ice.whoUse != PlayerOrder)
+                {
+                    effectAnim.SetTrigger("Water");
+                    audioSource.PlayOneShot(glass);
+                }
+            }
+        }
     }
 }

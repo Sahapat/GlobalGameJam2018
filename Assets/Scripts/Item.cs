@@ -1,10 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+public enum gameItem
+{
+    chair,
+    redbull,
+    ice,
+    keyboard,
+    penpad,
+    usb,
+    virus,
+    artAsset
+};
 public class Item : MonoBehaviour
 {
+    public int onIndex;
     public ItemUsedType UseType
+    {
+        get;
+        protected set;
+    }
+    public bool isSpecial;
+    public bool isOnRedBull;
+    public gameItem objItem
     {
         get;
         protected set;

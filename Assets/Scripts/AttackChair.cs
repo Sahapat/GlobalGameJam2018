@@ -10,6 +10,7 @@ public class AttackChair : Item
     private void Awake()
     {
         UseType = ItemUsedType.Attack;
+        objItem = gameItem.chair;
     }
     public override void UseItem(GameObject target)
     {

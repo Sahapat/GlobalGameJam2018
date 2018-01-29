@@ -9,6 +9,7 @@ public class AttackKeyboard : Item
     private void Awake()
     {
         UseType = ItemUsedType.Attack;
+        objItem = gameItem.keyboard;
     }
     public override void UseItem(GameObject target)
     {

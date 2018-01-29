@@ -177,6 +177,10 @@ MonoBehaviour:
   RequestObj: {fileID: 1684500137730304}
   playerOrder: 2
   progressStatus: 0
+  spawnRequest:
+  - {fileID: 1459507858584600, guid: 138b8b19c69550947a5828531207373b, type: 2}
+  - {fileID: 1205863263411502, guid: e4a371fd36f732748ba995f014afc116, type: 2}
+  - {fileID: 1338648374393024, guid: a4dae44da0632c94094b450a6053698c, type: 2}
   isHaveStatus: 0
   isStun: 0
   duration: 0

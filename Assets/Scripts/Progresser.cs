@@ -23,6 +23,7 @@ public class Progresser : MonoBehaviour
     private WaitForSeconds[] level;
     private GameController gameController;
 
+    public GameObject[] spawnRequest;
     public bool isHaveStatus;
     public bool isStun;
     public float duration;
@@ -38,6 +39,8 @@ public class Progresser : MonoBehaviour
     private Animator anim;
     public ProgressHub progressHub = null;
     private RequestDisplay display = null;
+    private GameController gamecontroller = null;
+    private bool alreadySpawn = false;
     IEnumerator progressing(byte level)
     {
         while(true)
@@ -56,15 +59,19 @@ public class Progresser : MonoBehaviour
         gameController = FindObjectOfType<GameController>();
         progressHub = ProgressHubOBJ.GetComponent<ProgressHub>();
         anim = GetComponent<Animator>();
+        gamecontroller = FindObjectOfType<GameController>();
         display = RequestObj.GetComponent<RequestDisplay>();
         stopProgress = 0;
         progressStatus = 0;
         isStartProgress = true;
         isWorking = true;
-        randomRequest();
+        
         anim.SetBool("isWorking", isWorking);
     }
-
+    private void Start()
+    {
+        randomRequest();
+    }
     private void Update()
     {
         if(gameController.isGameStart)
@@ -102,6 +109,33 @@ public class Progresser : MonoBehaviour
                 {
                     progressHub.totalProgress = (int)stopProgress;
                     canProgress = false;
+                    int spawnIndex = 0;
+                    if (!alreadySpawn)
+                    {
+                        for (int i = 0; i < gamecontroller.isSpecialEmpty.Length; i++)
+                        {
+                            if (gamecontroller.isSpecialEmpty[i])
+                            {
+                                spawnIndex = i;
+                            }
+                        }
+                        Vector3 spawn = gamecontroller.specialSpawn[spawnIndex].position;
+                        GameObject temp;
+                        switch (itemRequest)
+                        {
+                            case RequestItem.ArtAsset:
+                                temp = Instantiate(spawnRequest[0], spawn, Quaternion.identity);
+                                break;
+                            case RequestItem.data:
+                                temp = Instantiate(spawnRequest[1], spawn, Quaternion.identity);
+                                break;
+                            case RequestItem.RedBull:
+                                temp = Instantiate(spawnRequest[2], spawn, Quaternion.identity);
+                                break;
+                        }
+                        gameController.isSpecialEmpty[spawnIndex] = false;
+                        alreadySpawn = true;
+                    }
                 }
                 else
                 {
@@ -114,6 +148,7 @@ public class Progresser : MonoBehaviour
                         stopProgress = 110;
                         canProgress = true;
                         isGetTranmission = false;
+                        alreadySpawn = false;
                     }
                 }
             }
@@ -126,6 +161,10 @@ public class Progresser : MonoBehaviour
                 isWorking = true;
             }
         }
+        else
+        {
+            StopAllCoroutines();
+        }
     }
     private void restoreStatus()
     {
@@ -134,22 +173,14 @@ public class Progresser : MonoBehaviour
         duration = 0;
         isHaveStatus = false;
     }
-    public bool sendTranmission(RequestItem inItem)
+    public void sendTranmission()
     {
-        if (inItem == itemRequest)
-        {
-            isGetTranmission = true;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        isGetTranmission = true;
     }
     public void setStatus(bool isStun, byte progressStatus, float duration)
     {
         this.isStun = isStun;
-        this.progressStatus += progressStatus;
+        this.progressStatus =progressStatus;
         this.duration = duration;
         isHaveStatus = true;
         isStartProgress = true;
@@ -178,5 +209,6 @@ public class Progresser : MonoBehaviour
         stopRemain -= 1;
         canProgress = true;
         isGetTranmission = false;
+        alreadySpawn = false;
     }
 }

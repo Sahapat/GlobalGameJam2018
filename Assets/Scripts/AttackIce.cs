@@ -7,11 +7,12 @@ public class AttackIce : Item
     public float EffectDuration = 2f;
     public float Force = 50f;
     private Rigidbody2D myRig;
-    private byte whoUse;
-    private bool isShoot;
+    public byte whoUse;
+    public bool isShoot;
     private void Awake()
     {
         UseType = ItemUsedType.AttackAim;
+        objItem = gameItem.ice;
         myRig = GetComponent<Rigidbody2D>();
     }
     public override void UseItem(Vector2 direction, GameObject whoUse)
