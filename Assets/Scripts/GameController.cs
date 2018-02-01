@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
     private ProgressHub progress1;
     private ProgressHub progress2;
     public GameObject about;
+    public bool isJoystick;
     private void Awake()
     {
         progress1 = p1.GetComponent<ProgressHub>();
@@ -58,29 +59,43 @@ public class GameController : MonoBehaviour
     }
     private void Update()
     {
-        if(Input.anyKey)
+        if(Input.GetKeyDown(KeyCode.Space))
         {
             if(about.activeSelf)
             {
                 about.SetActive(false);
                 isGameStart = true;
                 endGane.SetActive(false);
+                isJoystick = false;
             }
         }
-        if(progress1.totalProgress >= 100)
+        else if(Input.GetKeyDown(KeyCode.Joystick1Button9))
         {
-            showText.text = "Player1 is a winner!!!";
-            isGameStart = false;
+            if (about.activeSelf)
+            {
+                about.SetActive(false);
+                isGameStart = true;
+                endGane.SetActive(false);
+                isJoystick = true;
+            }
         }
-        if(progress2.totalProgress >= 100)
+        if (isGameStart)
         {
-            showText.text = "Player2 is a winner!!!";
-            isGameStart = false;
-        }
-        if(progress1.totalProgress >= 100 && progress2.totalProgress >= 100)
-        {
-            showText.text = "Draw";
-            isGameStart = false;
+            if (progress1.totalProgress >= 100)
+            {
+                showText.text = "Player1 is a winner!!!";
+                isGameStart = false;
+            }
+            if (progress2.totalProgress >= 100)
+            {
+                showText.text = "Player2 is a winner!!!";
+                isGameStart = false;
+            }
+            if (progress1.totalProgress >= 100 && progress2.totalProgress >= 100)
+            {
+                showText.text = "Draw";
+                isGameStart = false;
+            }
         }
 
         if(!isGameStart)
