@@ -5,6 +5,7 @@ using UnityEngine;
 public class controllerBubble : MonoBehaviour
 {
     public Sprite[] display;
+    public GameObject showItem;
     public GameObject Player;
     private Inventory inventory;
     private SpriteRenderer change;
@@ -12,7 +13,7 @@ public class controllerBubble : MonoBehaviour
     private void Start()
     {
         inventory = Player.GetComponent<Inventory>();
-        change = GetComponent<SpriteRenderer>();
+        change = showItem.GetComponent<SpriteRenderer>();
         show = inventory.useItem();
     }
 
