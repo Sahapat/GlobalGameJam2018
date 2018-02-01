@@ -120,17 +120,16 @@ public class Progresser : MonoBehaviour
                             }
                         }
                         Vector3 spawn = gamecontroller.specialSpawn[spawnIndex].position;
-                        GameObject temp;
                         switch (itemRequest)
                         {
                             case RequestItem.ArtAsset:
-                                temp = Instantiate(spawnRequest[0], spawn, Quaternion.identity);
+                                Instantiate(spawnRequest[0], spawn, Quaternion.identity);
                                 break;
                             case RequestItem.data:
-                                temp = Instantiate(spawnRequest[1], spawn, Quaternion.identity);
+                               Instantiate(spawnRequest[1], spawn, Quaternion.identity);
                                 break;
                             case RequestItem.RedBull:
-                                temp = Instantiate(spawnRequest[2], spawn, Quaternion.identity);
+                                Instantiate(spawnRequest[2], spawn, Quaternion.identity);
                                 break;
                         }
                         gameController.isSpecialEmpty[spawnIndex] = false;
