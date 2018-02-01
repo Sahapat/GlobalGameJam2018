@@ -29,6 +29,11 @@ public class GameController : MonoBehaviour
     public Text showText;
     public GameObject p1;
     public GameObject p2;
+    public GameObject programer1;
+    public GameObject programer2;
+
+    private Progresser progresser1;
+    private Progresser progresser2;
     private ProgressHub progress1;
     private ProgressHub progress2;
     public GameObject about;
@@ -37,6 +42,8 @@ public class GameController : MonoBehaviour
     {
         progress1 = p1.GetComponent<ProgressHub>();
         progress2 = p2.GetComponent<ProgressHub>();
+        progresser1 = programer1.GetComponent<Progresser>();
+        progresser2 = programer2.GetComponent<Progresser>();
     }
     private void Start()
     {
@@ -85,16 +92,20 @@ public class GameController : MonoBehaviour
             {
                 showText.text = "Player1 is a winner!!!";
                 isGameStart = false;
+                progresser1.isWinner = true;
             }
             if (progress2.totalProgress >= 100)
             {
                 showText.text = "Player2 is a winner!!!";
                 isGameStart = false;
+                progresser2.isWinner = true;
             }
             if (progress1.totalProgress >= 100 && progress2.totalProgress >= 100)
             {
                 showText.text = "Draw";
                 isGameStart = false;
+                progresser1.isWinner = true;
+                progresser2.isWinner = true;
             }
         }
 

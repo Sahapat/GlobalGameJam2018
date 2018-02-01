@@ -33,6 +33,7 @@ public class Progresser : MonoBehaviour
     public float stopProgress;
     public bool isWorking;
     public bool isGetTranmission;
+    public bool isWinner;
 
     public RequestItem itemRequest = RequestItem.None;
 
@@ -65,7 +66,7 @@ public class Progresser : MonoBehaviour
         progressStatus = 0;
         isStartProgress = true;
         isWorking = true;
-        
+        isWinner = false;
         anim.SetBool("isWorking", isWorking);
     }
     private void Start()
@@ -163,6 +164,10 @@ public class Progresser : MonoBehaviour
         else
         {
             StopAllCoroutines();
+            if(isWinner)
+            {
+                anim.SetBool("isWinner", isWinner);
+            }
         }
     }
     private void restoreStatus()

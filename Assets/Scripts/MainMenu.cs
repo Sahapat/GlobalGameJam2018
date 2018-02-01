@@ -118,9 +118,6 @@ public class MainMenu : MonoBehaviour
                 fadeAnim.SetBool("isFadeOut", true);
                 fadeAnim.SetBool("isFadeIn", false);
                 StartCoroutine(WaitAndFadeIn(1.5f));
-                aboutAnim.SetBool("isClick", false);
-                gameStartAnim.SetBool("isClick", false);
-                quitAnim.SetBool("isClick", false);
             }
         }
     }
