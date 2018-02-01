@@ -11,6 +11,12 @@ public class MainMenu : MonoBehaviour
     private GameObject aboutObj;
     [SerializeField]
     private GameObject quitObj;
+    [SerializeField]
+    private GameObject FadeObj;
+    [SerializeField]
+    private GameObject MainMenuObj;
+    [SerializeField]
+    private GameObject AboutObj;
 
     private Image gamestart;
     private Image about;
@@ -19,6 +25,7 @@ public class MainMenu : MonoBehaviour
     private Animator gameStartAnim;
     private Animator aboutAnim;
     private Animator quitAnim;
+    private Animator fadeAnim;
 
     [SerializeField]
     private Color unSelectedColor;
@@ -29,7 +36,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private int selected;
 
-    private bool isClick;
+    private bool isOnMainMenu;
 
     private void Awake()
     {
@@ -40,13 +47,18 @@ public class MainMenu : MonoBehaviour
         gameStartAnim = gameStartObj.GetComponent<Animator>();
         aboutAnim = aboutObj.GetComponent<Animator>();
         quitAnim = quitObj.GetComponent<Animator>();
+        fadeAnim = FadeObj.GetComponent<Animator>();
 
         selected = 0;
-        isClick = false;
+        isOnMainMenu = true;
+    }
+    private void Start()
+    {
+        SetContent();
     }
     private void Update()
     {
-        if (!isClick)
+        if (isOnMainMenu)
         {
             if (Input.GetKeyDown(KeyCode.DownArrow))
             {
@@ -73,24 +85,43 @@ public class MainMenu : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
             {
-                isClick = true;
+                isOnMainMenu = false;
                 switch (selected)
                 {
                     case 0:
-                        gameStartAnim.SetBool("isClick",isClick);
+                        gameStartAnim.SetBool("isClick", true);
+                        fadeAnim.SetBool("isFadeOut", true);
+                        fadeAnim.SetBool("isFadeIn", false);
                         StartCoroutine(WaitAndLoad(1.5f));
                         break;
                     case 1:
-                        aboutAnim.SetBool("isClick", isClick);
+                        aboutAnim.SetBool("isClick", true);
+                        fadeAnim.SetBool("isFadeOut", true);
+                        fadeAnim.SetBool("isFadeIn", false);
                         StartCoroutine(WaitAndChange(1.5f));
                         break;
                     case 2:
-                        quitAnim.SetBool("isClick", isClick);
+                        quitAnim.SetBool("isClick", true);
+                        fadeAnim.SetBool("isFadeOut", true);
+                        fadeAnim.SetBool("isFadeIn", false);
                         StartCoroutine(WaitAndQuit(1f));
                         break;
                 }
             }
             setColorToSelected();
+        }
+        else
+        {
+            if(Input.GetKeyDown(KeyCode.Backspace))
+            {
+                isOnMainMenu = true;
+                fadeAnim.SetBool("isFadeOut", true);
+                fadeAnim.SetBool("isFadeIn", false);
+                StartCoroutine(WaitAndFadeIn(1.5f));
+                aboutAnim.SetBool("isClick", false);
+                gameStartAnim.SetBool("isClick", false);
+                quitAnim.SetBool("isClick", false);
+            }
         }
     }
     private void setColorToSelected()
@@ -119,6 +150,11 @@ public class MainMenu : MonoBehaviour
                 break;
         }
     }
+    private void SetContent()
+    {
+        MainMenuObj.SetActive(isOnMainMenu);
+        AboutObj.SetActive(!isOnMainMenu);
+    }
     IEnumerator WaitAndLoad(float time)
     {
         yield return new WaitForSeconds(time);
@@ -127,6 +163,16 @@ public class MainMenu : MonoBehaviour
     IEnumerator WaitAndChange(float time)
     {
         yield return new WaitForSeconds(time);
+        fadeAnim.SetBool("isFadeOut", false);
+        fadeAnim.SetBool("isFadeIn", true);
+        SetContent();
+    }
+    IEnumerator WaitAndFadeIn(float time)
+    {
+        yield return new WaitForSeconds(time);
+        fadeAnim.SetBool("isFadeOut", false);
+        fadeAnim.SetBool("isFadeIn", true);
+        SetContent();
     }
     IEnumerator WaitAndQuit(float time)
     {
