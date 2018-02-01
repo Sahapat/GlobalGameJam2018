@@ -29,6 +29,8 @@ public class MainMenu : MonoBehaviour
     [SerializeField]
     private int selected;
 
+    private bool isClick;
+
     private void Awake()
     {
         gamestart = gameStartObj.GetComponent<Image>();
@@ -40,51 +42,56 @@ public class MainMenu : MonoBehaviour
         quitAnim = quitObj.GetComponent<Animator>();
 
         selected = 0;
+        isClick = false;
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.DownArrow))
+        if (!isClick)
         {
-            if (selected < 2)
+            if (Input.GetKeyDown(KeyCode.DownArrow))
             {
-                selected += 1;
+                if (selected < 2)
+                {
+                    selected += 1;
+                }
+                else
+                {
+                    selected = 0;
+                }
             }
-            else
+            else if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                selected = 0;
+                if (selected > 0)
+                {
+                    selected -= 1;
+                }
+                else
+                {
+                    selected = 2;
+                }
             }
+
+            if (Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetKeyDown(KeyCode.Space))
+            {
+                isClick = true;
+                switch (selected)
+                {
+                    case 0:
+                        gameStartAnim.SetBool("isClick",isClick);
+                        StartCoroutine(WaitAndLoad(1.5f));
+                        break;
+                    case 1:
+                        aboutAnim.SetBool("isClick", isClick);
+                        StartCoroutine(WaitAndChange(1.5f));
+                        break;
+                    case 2:
+                        quitAnim.SetBool("isClick", isClick);
+                        StartCoroutine(WaitAndQuit(1f));
+                        break;
+                }
+            }
+            setColorToSelected();
         }
-        else if(Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            if (selected > 0)
-            {
-                selected -= 1;
-            }
-            else
-            {
-                selected = 2;
-            }
-        }
-        
-        if(Input.GetKeyDown(KeyCode.KeypadEnter)||Input.GetKeyDown(KeyCode.Space))
-        {
-            switch(selected)
-            {
-                case 0:
-                    gameStartAnim.SetBool("isClick", true);
-                    StartCoroutine(WaitAndLoad(1.5f));
-                    break;
-                case 1:
-                    aboutAnim.SetBool("isClick", true);
-                    StartCoroutine(WaitAndChange(1.5f));
-                    break;
-                case 2:
-                    quitAnim.SetBool("isClick", true);
-                    StartCoroutine(WaitAndChange(1f));
-                    break;
-            }
-        }
-        setColorToSelected();
     }
     private void setColorToSelected()
     {
@@ -120,12 +127,10 @@ public class MainMenu : MonoBehaviour
     IEnumerator WaitAndChange(float time)
     {
         yield return new WaitForSeconds(time);
-        print("Finish");
     }
     IEnumerator WaitAndQuit(float time)
     {
         yield return new WaitForSeconds(time);
         Application.Quit();
-        print("Finish");
     }
 }
