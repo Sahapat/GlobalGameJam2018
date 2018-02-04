@@ -36,14 +36,25 @@ public class GameController : MonoBehaviour
     private Progresser progresser2;
     private ProgressHub progress1;
     private ProgressHub progress2;
-    public GameObject about;
+    public GameObject Fade;   
+    public GameObject ControlSelecter;
+    public GameObject aboutJoy;
+    public GameObject aboutKeyboard;
+    public GameObject RightSelected;
+    public GameObject LeftSelected;
     public bool isJoystick;
+    private bool isInGame;
+    private bool isGameEnd;
+    private WaitForSeconds transitionTime;
+    private Animator fadeAnim;
     private void Awake()
     {
         progress1 = p1.GetComponent<ProgressHub>();
         progress2 = p2.GetComponent<ProgressHub>();
         progresser1 = programer1.GetComponent<Progresser>();
         progresser2 = programer2.GetComponent<Progresser>();
+        fadeAnim = Fade.GetComponent<Animator>();
+        transitionTime = new WaitForSeconds(1f);
     }
     private void Start()
     {
@@ -63,27 +74,82 @@ public class GameController : MonoBehaviour
         {
             isSpecialEmpty[i] = true;
         }
+        isGameStart = false;
+        isInGame = false;
+        RightSelected.SetActive(false);
+        LeftSelected.SetActive(false);
+        ControlSelecter.SetActive(true);
+        aboutJoy.SetActive(false);
+        aboutKeyboard.SetActive(false);
     }
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if (!isInGame)
         {
-            if(about.activeSelf)
+            if (ControlSelecter.activeSelf)
             {
-                about.SetActive(false);
-                isGameStart = true;
-                endGane.SetActive(false);
-                isJoystick = false;
+                if(ActionInputController.getStartButton())
+                {
+                    isJoystick = true;
+                    RightSelected.SetActive(true);
+                    LeftSelected.SetActive(false);
+                    fadeAnim.SetBool("isFadeOut", true);
+                    StartCoroutine(TransitionFade());
+                    ControlSelecter.SetActive(false);
+                    aboutJoy.SetActive(true);
+                    aboutKeyboard.SetActive(false);
+
+                }
+                else if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    isJoystick = false;
+                    RightSelected.SetActive(false);
+                    LeftSelected.SetActive(true);
+                    fadeAnim.SetBool("isFadeOut", true);
+                    StartCoroutine(TransitionFade());
+                    ControlSelecter.SetActive(false);
+                    aboutJoy.SetActive(false);
+                    aboutKeyboard.SetActive(true);
+                }
             }
-        }
-        else if(Input.GetKeyDown(KeyCode.Joystick1Button9))
-        {
-            if (about.activeSelf)
+            else
             {
-                about.SetActive(false);
-                isGameStart = true;
-                endGane.SetActive(false);
-                isJoystick = true;
+                if (isJoystick)
+                {
+                    if (ActionInputController.getBackButton())
+                    {
+                        isJoystick = false;
+                        ControlSelecter.SetActive(true);
+                        aboutJoy.SetActive(false);
+                        aboutKeyboard.SetActive(false);
+                    }
+                    if (ActionInputController.getStartButton())
+                    {
+                        ControlSelecter.SetActive(false);
+                        aboutJoy.SetActive(false);
+                        aboutKeyboard.SetActive(false);
+                        isGameStart = true;
+                        isInGame = true;
+                    }
+                }
+                else
+                {
+                    if (Input.GetKeyDown(KeyCode.Backspace))
+                    {
+                        isJoystick = false;
+                        ControlSelecter.SetActive(true);
+                        aboutJoy.SetActive(false);
+                        aboutKeyboard.SetActive(false);
+                    }
+                    if (Input.GetKeyDown(KeyCode.Space))
+                    {
+                        ControlSelecter.SetActive(false);
+                        aboutJoy.SetActive(false);
+                        aboutKeyboard.SetActive(false);
+                        isGameStart = true;
+                        isInGame = true;
+                    }
+                }
             }
         }
         if (isGameStart)
@@ -93,12 +159,14 @@ public class GameController : MonoBehaviour
                 showText.text = "Player1 is a winner!!!";
                 isGameStart = false;
                 progresser1.isWinner = true;
+                isGameEnd = true;
             }
             if (progress2.totalProgress >= 100)
             {
                 showText.text = "Player2 is a winner!!!";
                 isGameStart = false;
                 progresser2.isWinner = true;
+                isGameEnd = true;
             }
             if (progress1.totalProgress >= 100 && progress2.totalProgress >= 100)
             {
@@ -106,19 +174,28 @@ public class GameController : MonoBehaviour
                 isGameStart = false;
                 progresser1.isWinner = true;
                 progresser2.isWinner = true;
+                isGameEnd = true;
             }
         }
-
-        if(!isGameStart)
-        {
-            endGane.SetActive(true);
-        }
-        if(endGane.activeSelf)
+        if(isGameEnd)
         {
             if(Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(1);
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
+            else if(Input.GetKeyDown(KeyCode.Backspace))
+            {
+                SceneManager.LoadScene(0);
+            }
+            endGane.SetActive(true);
+        }
+        else
+        {
+            endGane.SetActive(false);
+        }
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
         }
     }
     private void FixedUpdate()
@@ -198,5 +275,10 @@ public class GameController : MonoBehaviour
             isRedbullEmpty[1] = false;
             temp2.isSpecial = false;
         }
+    }
+    private IEnumerator TransitionFade()
+    {
+        yield return transitionTime;
+        fadeAnim.SetBool("isFadeOut", false);
     }
 }

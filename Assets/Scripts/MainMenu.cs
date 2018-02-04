@@ -38,6 +38,8 @@ public class MainMenu : MonoBehaviour
 
     private bool isOnMainMenu;
 
+    private WaitForSeconds transitionTime;
+
     private void Awake()
     {
         gamestart = gameStartObj.GetComponent<Image>();
@@ -48,13 +50,14 @@ public class MainMenu : MonoBehaviour
         aboutAnim = aboutObj.GetComponent<Animator>();
         quitAnim = quitObj.GetComponent<Animator>();
         fadeAnim = FadeObj.GetComponent<Animator>();
+        transitionTime = new WaitForSeconds(1f);
 
         selected = 0;
         isOnMainMenu = true;
     }
     private void Start()
     {
-        SetContent();
+        SetContent(); fadeAnim.SetBool("isFadeOut", false);
     }
     private void Update()
     {
@@ -91,20 +94,17 @@ public class MainMenu : MonoBehaviour
                     case 0:
                         gameStartAnim.SetBool("isClick", true);
                         fadeAnim.SetBool("isFadeOut", true);
-                        fadeAnim.SetBool("isFadeIn", false);
-                        StartCoroutine(WaitAndLoad(1.5f));
+                        StartCoroutine(WaitAndLoad());
                         break;
                     case 1:
                         aboutAnim.SetBool("isClick", true);
                         fadeAnim.SetBool("isFadeOut", true);
-                        fadeAnim.SetBool("isFadeIn", false);
-                        StartCoroutine(WaitAndChange(1.5f));
+                        StartCoroutine(WaitAndChange());
                         break;
                     case 2:
                         quitAnim.SetBool("isClick", true);
                         fadeAnim.SetBool("isFadeOut", true);
-                        fadeAnim.SetBool("isFadeIn", false);
-                        StartCoroutine(WaitAndQuit(1f));
+                        StartCoroutine(WaitAndQuit());
                         break;
                 }
             }
@@ -116,8 +116,7 @@ public class MainMenu : MonoBehaviour
             {
                 isOnMainMenu = true;
                 fadeAnim.SetBool("isFadeOut", true);
-                fadeAnim.SetBool("isFadeIn", false);
-                StartCoroutine(WaitAndFadeIn(1.5f));
+                StartCoroutine(WaitAndFadeIn());
             }
         }
     }
@@ -152,28 +151,28 @@ public class MainMenu : MonoBehaviour
         MainMenuObj.SetActive(isOnMainMenu);
         AboutObj.SetActive(!isOnMainMenu);
     }
-    IEnumerator WaitAndLoad(float time)
+    IEnumerator WaitAndLoad()
     {
-        yield return new WaitForSeconds(time);
+        yield return transitionTime;
         SceneManager.LoadScene(1);
     }
-    IEnumerator WaitAndChange(float time)
+    IEnumerator WaitAndChange()
     {
-        yield return new WaitForSeconds(time);
+        yield return transitionTime;
         fadeAnim.SetBool("isFadeOut", false);
-        fadeAnim.SetBool("isFadeIn", true);
         SetContent();
+        fadeAnim.SetTrigger("FadeIn");
     }
-    IEnumerator WaitAndFadeIn(float time)
+    IEnumerator WaitAndFadeIn()
     {
-        yield return new WaitForSeconds(time);
+        yield return transitionTime;
         fadeAnim.SetBool("isFadeOut", false);
-        fadeAnim.SetBool("isFadeIn", true);
         SetContent();
+        fadeAnim.SetTrigger("FadeIn");
     }
-    IEnumerator WaitAndQuit(float time)
+    IEnumerator WaitAndQuit()
     {
-        yield return new WaitForSeconds(time);
+        yield return transitionTime;
         Application.Quit();
     }
 }
