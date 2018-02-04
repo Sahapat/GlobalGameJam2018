@@ -52,6 +52,14 @@ public class ActionInputController
             return (player == 1) ? Input.GetKeyDown(KeyCode.V) : Input.GetKeyDown(KeyCode.KeypadMinus);
         }
     }
+    public static bool getStartButton()
+    {
+        return (Input.GetKeyDown(KeyCode.Joystick1Button9) || Input.GetKeyDown(KeyCode.Joystick2Button9)) ? true : false;
+    }
+    public static bool getBackButton()
+    {
+        return (Input.GetKeyDown(KeyCode.Joystick1Button10) || Input.GetKeyDown(KeyCode.Joystick2Button10)) ? true : false;
+    }
     public static Vector2 getMovement(byte player, bool isJoy)
     {
         if (isJoy)
