@@ -1,5 +1,5 @@
 # GameJam2018Project
-Global Game jam 2018 Project <br/>
+Global Game jam 2018 Project <br>
 new line <br>
 new line
 - Sample Images
