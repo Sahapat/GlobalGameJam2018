@@ -1,4 +1,7 @@
 # GameJam2018Project
+<hr>
 Global Game jam 2018 Project
-- Sample Images
+### - Concept
+
+- Sceenshot
 ![img](screenshots/Game1.png)
